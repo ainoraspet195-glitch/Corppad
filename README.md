@@ -50,7 +50,7 @@ npm run dev
 ![Login](./corppad/ss/1.png)
 
 ### 2) Dashboard/Projects
-![Dashboard](./corppad/corppad/ss/2.png)
+![Dashboard](./corppad/ss/2.png)
 
 ### 3) Teams/Billing
 ![Projects](./corppad/ss/3.png)
