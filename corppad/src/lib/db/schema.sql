@@ -5,15 +5,20 @@
 
 -- organizations
 create table if not exists organizations (
-  id                    uuid primary key default gen_random_uuid(),
-  name                  text not null,
-  slug                  text not null unique,
-  plan                  text not null default 'free' check (plan in ('free', 'pro')),
-  stripe_customer_id    text,
+  id                     uuid primary key default gen_random_uuid(),
+  name                   text not null,
+  slug                   text not null unique,
+  plan                   text not null default 'free' check (plan in ('free', 'pro')),
+  stripe_customer_id     text,
   stripe_subscription_id text,
-  subscription_status   text,
-  created_at            timestamptz not null default now()
+  subscription_status    text,
+  current_period_end     timestamptz,        -- populated by Stripe webhook
+  created_at             timestamptz not null default now()
 );
+
+-- Stage 4 migration: add current_period_end if running against an existing DB
+alter table organizations
+  add column if not exists current_period_end timestamptz;
 
 -- org_members (junction: user ↔ org + role)
 create table if not exists org_members (
