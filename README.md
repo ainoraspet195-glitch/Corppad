@@ -1,6 +1,6 @@
 # Corppad — SaaS MVP Starter (Demo)
 
-Live demo : corppad.vercel.app
+Live demo : https://corppad.vercel.app
 
 Reusable SaaS MVP starter demo (Upwork portfolio): Next.js App Router + TypeScript + Tailwind + Supabase (Auth/DB/RLS) + Stripe (Free/Pro).
 
