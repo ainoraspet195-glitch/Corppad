@@ -1,6 +1,7 @@
 -- ============================================================
 -- Corppad — RLS policies for org isolation
--- Run AFTER schema.sql
+-- Idempotent: drops and recreates all policies.
+-- Run AFTER schema.sql in Supabase SQL editor.
 -- ============================================================
 
 -- Enable RLS on all tables
@@ -45,14 +46,18 @@ $$;
 
 -- ─── organizations ───────────────────────────────────────────
 
+drop policy if exists "org members can read their org" on organizations;
+
 -- Members can read orgs they belong to
 create policy "org members can read their org"
   on organizations for select
   using (is_org_member(id));
 
--- No direct inserts from client; org creation is done via service role in onboarding action
+-- No direct inserts from client; org creation uses service role in onboarding action
 
 -- ─── org_members ─────────────────────────────────────────────
+
+drop policy if exists "org members can read memberships" on org_members;
 
 -- Members can see other members in the same org
 create policy "org members can read memberships"
@@ -62,29 +67,43 @@ create policy "org members can read memberships"
 -- No direct inserts from client; managed via service role
 
 -- ─── projects ────────────────────────────────────────────────
+-- Stage 2: write operations require admin or owner role.
+-- Members are read-only; limit enforcement happens in app code.
+
+drop policy if exists "org members can read projects"   on projects;
+drop policy if exists "org members can insert projects" on projects;
+drop policy if exists "org members can update projects" on projects;
+drop policy if exists "admins can insert projects"      on projects;
+drop policy if exists "admins can update projects"      on projects;
+drop policy if exists "admins can delete projects"      on projects;
 
 -- All org members can read projects
 create policy "org members can read projects"
   on projects for select
   using (is_org_member(org_id));
 
--- All org members can create projects (free-limit enforced in app code)
-create policy "org members can insert projects"
+-- Owner/Admin only: create projects
+-- Note: free-plan project limit is enforced in app code (server actions), not here.
+create policy "admins can insert projects"
   on projects for insert
-  with check (is_org_member(org_id));
+  with check (has_org_role(org_id, 'admin'));
 
--- All org members can update their org's projects
-create policy "org members can update projects"
+-- Owner/Admin only: update projects
+create policy "admins can update projects"
   on projects for update
-  using (is_org_member(org_id))
-  with check (is_org_member(org_id));
+  using (has_org_role(org_id, 'admin'))
+  with check (has_org_role(org_id, 'admin'));
 
--- Admins/owners can delete projects
+-- Owner/Admin only: delete projects
 create policy "admins can delete projects"
   on projects for delete
   using (has_org_role(org_id, 'admin'));
 
 -- ─── invites ─────────────────────────────────────────────────
+
+drop policy if exists "org members can read invites" on invites;
+drop policy if exists "admins can insert invites"    on invites;
+drop policy if exists "admins can update invites"    on invites;
 
 -- Org members can read invites for their org
 create policy "org members can read invites"
@@ -101,4 +120,4 @@ create policy "admins can update invites"
   on invites for update
   using (has_org_role(org_id, 'admin'));
 
--- Service role bypasses RLS — used for accept-invite to mark used_at
+-- Service role bypasses RLS — used for onboarding and accept-invite flows

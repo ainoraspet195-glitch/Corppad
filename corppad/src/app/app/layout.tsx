@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getMissingPublicEnv } from '@/lib/env'
 import { MissingEnv } from '@/components/MissingEnv'
@@ -28,30 +29,30 @@ export default async function AppLayout({
           <span className="text-lg font-semibold text-gray-900">Corppad</span>
         </div>
         <nav className="p-3 space-y-1">
-          <a
+          <Link
             href="/app"
             className="flex items-center rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Dashboard
-          </a>
-          <a
+          </Link>
+          <Link
             href="/app/projects"
             className="flex items-center rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Projects
-          </a>
-          <a
+          </Link>
+          <Link
             href="/app/settings/team"
             className="flex items-center rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Team
-          </a>
-          <a
+          </Link>
+          <Link
             href="/app/settings/billing"
             className="flex items-center rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Billing
-          </a>
+          </Link>
         </nav>
         <div className="absolute bottom-0 left-0 w-56 border-t border-gray-200 bg-white p-3">
           <form action="/logout" method="POST">
