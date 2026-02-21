@@ -47,10 +47,10 @@ npm run dev
 ### Screenshots 
 
 ### 1) Login
-![Login](./ss/1.png)
+![Login](./corppad/ss/1.png)
 
 ### 2) Dashboard/Projects
-![Dashboard](./ss/2.png)
+![Dashboard](./corppad/corppad/ss/2.png)
 
 ### 3) Teams/Billing
-![Projects](./ss/3.png)
+![Projects](./corppad/ss/3.png)
