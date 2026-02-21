@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { getOrgContext, canWrite } from '@/lib/org'
 import { hasStripeConfig } from '@/lib/stripe'
 import { FREE_PLAN_PROJECT_LIMIT } from '@/lib/limits'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
 import { redirect } from 'next/navigation'
 import { startCheckoutAction, openPortalAction } from './actions'
 
@@ -23,7 +25,6 @@ export default async function BillingPage({ searchParams }: Props) {
   const ctx = await getOrgContext(supabase, user.id)
   if (!ctx) redirect('/app/onboarding')
 
-  // Fetch full org billing row (RLS: members can read their org)
   const { data: org } = await supabase
     .from('organizations')
     .select(
@@ -39,7 +40,8 @@ export default async function BillingPage({ searchParams }: Props) {
   const isWriter = canWrite(ctx.role)
 
   return (
-    <div className="space-y-6 max-w-xl">
+    <div className="space-y-6 max-w-2xl">
+      {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-900">Billing</h1>
         <p className="mt-1 text-sm text-gray-500">{ctx.org_name}</p>
@@ -47,30 +49,30 @@ export default async function BillingPage({ searchParams }: Props) {
 
       {/* Status banners */}
       {success && (
-        <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+        <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
           Payment successful! Your plan upgrade is being processed — refresh
           in a few seconds to see your updated plan.
         </div>
       )}
       {canceled && (
-        <div className="rounded-md border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600">
+        <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600">
           Checkout canceled. No charge was made.
         </div>
       )}
       {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
       {/* Current plan card */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <Card>
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
               Current plan
             </p>
-            <p className="mt-1 text-2xl font-semibold capitalize text-gray-900">
+            <p className="mt-1 text-3xl font-semibold capitalize text-gray-900">
               {plan}
             </p>
             {org?.subscription_status && org.subscription_status !== 'active' && (
@@ -81,7 +83,7 @@ export default async function BillingPage({ searchParams }: Props) {
             )}
             {plan === 'pro' && org?.current_period_end && (
               <p className="mt-1 text-sm text-gray-500">
-                Renews on{' '}
+                Renews{' '}
                 <span className="font-medium">
                   {new Date(org.current_period_end as string).toLocaleDateString()}
                 </span>
@@ -102,7 +104,7 @@ export default async function BillingPage({ searchParams }: Props) {
           <span
             className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
               plan === 'pro'
-                ? 'bg-blue-100 text-blue-700'
+                ? 'bg-indigo-100 text-indigo-700'
                 : 'bg-gray-100 text-gray-500'
             }`}
           >
@@ -116,40 +118,32 @@ export default async function BillingPage({ searchParams }: Props) {
             {plan === 'free' ? (
               stripeReady ? (
                 <form action={startCheckoutAction}>
-                  <button
-                    type="submit"
-                    className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                  >
-                    Upgrade to Pro
-                  </button>
+                  <Button type="submit">Upgrade to Pro</Button>
                 </form>
               ) : (
                 <p className="text-sm text-amber-700">
                   Stripe is not configured. Add{' '}
-                  <code className="font-mono text-xs">STRIPE_SECRET_KEY</code>{' '}
+                  <code className="rounded bg-amber-100 px-1 font-mono text-xs">STRIPE_SECRET_KEY</code>{' '}
                   and{' '}
-                  <code className="font-mono text-xs">STRIPE_PRICE_ID_PRO</code>{' '}
+                  <code className="rounded bg-amber-100 px-1 font-mono text-xs">STRIPE_PRICE_ID_PRO</code>{' '}
                   to .env.local.
                 </p>
               )
             ) : (
               org?.stripe_customer_id && (
                 <form action={openPortalAction}>
-                  <button
-                    type="submit"
-                    className="rounded-md border border-gray-300 bg-white px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                  >
+                  <Button type="submit" variant="secondary">
                     Manage subscription
-                  </button>
+                  </Button>
                 </form>
               )
             )}
           </div>
         )}
-      </div>
+      </Card>
 
-      {/* Plan comparison (minimal) */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      {/* Plan comparison */}
+      <Card>
         <h2 className="mb-4 text-sm font-semibold text-gray-700">
           Plan comparison
         </h2>
@@ -179,7 +173,7 @@ export default async function BillingPage({ searchParams }: Props) {
             </tr>
           </tbody>
         </table>
-      </div>
+      </Card>
     </div>
   )
 }

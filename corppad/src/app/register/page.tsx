@@ -1,5 +1,8 @@
+import Link from 'next/link'
 import { getMissingPublicEnv } from '@/lib/env'
 import { MissingEnv } from '@/components/MissingEnv'
+import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
 import { registerAction } from './actions'
 
 interface Props {
@@ -15,65 +18,60 @@ export default async function RegisterPage({ searchParams }: Props) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-sm">
-        <h1 className="mb-6 text-center text-2xl font-semibold text-gray-900">
-          Create your account
-        </h1>
+        {/* Brand */}
+        <div className="mb-8 text-center">
+          <Link href="/app" className="text-sm font-bold tracking-widest text-blue-600">
+            CORPPAD
+          </Link>
+          <h1 className="mt-4 text-2xl font-semibold text-gray-900">
+            Create your account
+          </h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Get started for free — no credit card required
+          </p>
+        </div>
 
-        {error && (
-          <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {error}
-          </div>
-        )}
+        {/* Card */}
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          {error && (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
 
-        <form action={registerAction} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
+          <form action={registerAction} className="space-y-4">
+            <Input
+              label="Email"
               id="email"
               name="email"
               type="email"
               required
               autoComplete="email"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="you@example.com"
             />
-          </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <input
+            <Input
+              label="Password"
               id="password"
               name="password"
               type="password"
               required
               minLength={6}
               autoComplete="new-password"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="Min. 6 characters"
             />
-          </div>
 
-          <button
-            type="submit"
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Create account
-          </button>
-        </form>
+            <Button type="submit" className="w-full mt-2">
+              Create account
+            </Button>
+          </form>
+        </div>
 
         <p className="mt-4 text-center text-sm text-gray-500">
           Already have an account?{' '}
-          <a href="/login" className="text-blue-600 hover:underline">
+          <Link href="/login" className="font-medium text-indigo-600 hover:text-indigo-700">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>

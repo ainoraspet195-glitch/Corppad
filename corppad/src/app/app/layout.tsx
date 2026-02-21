@@ -4,6 +4,13 @@ import { getMissingPublicEnv } from '@/lib/env'
 import { MissingEnv } from '@/components/MissingEnv'
 import { redirect } from 'next/navigation'
 
+const navLinks = [
+  { href: '/app', label: 'Dashboard' },
+  { href: '/app/projects', label: 'Projects' },
+  { href: '/app/settings/team', label: 'Team' },
+  { href: '/app/settings/billing', label: 'Billing' },
+]
+
 export default async function AppLayout({
   children,
 }: {
@@ -24,41 +31,33 @@ export default async function AppLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-56 shrink-0 border-r border-gray-200 bg-white">
-        <div className="flex h-14 items-center border-b border-gray-200 px-4">
-          <span className="text-lg font-semibold text-gray-900">Corppad</span>
+      <aside className="flex w-60 shrink-0 flex-col border-r border-gray-200 bg-white">
+        {/* Logo */}
+        <div className="flex h-14 items-center border-b border-gray-100 px-5">
+          <Link href="/app" className="text-sm font-bold tracking-widest text-blue-600">
+            CORPPAD
+          </Link>
         </div>
-        <nav className="p-3 space-y-1">
-          <Link
-            href="/app"
-            className="flex items-center rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/app/projects"
-            className="flex items-center rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Projects
-          </Link>
-          <Link
-            href="/app/settings/team"
-            className="flex items-center rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Team
-          </Link>
-          <Link
-            href="/app/settings/billing"
-            className="flex items-center rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Billing
-          </Link>
+
+        {/* Nav */}
+        <nav className="flex-1 space-y-0.5 p-3">
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="flex items-center rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
-        <div className="absolute bottom-0 left-0 w-56 border-t border-gray-200 bg-white p-3">
+
+        {/* Sign out */}
+        <div className="border-t border-gray-100 p-3">
           <form action="/logout" method="POST">
             <button
               type="submit"
-              className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+              className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
             >
               Sign out
             </button>
@@ -68,7 +67,7 @@ export default async function AppLayout({
 
       {/* Main content */}
       <main className="flex-1 overflow-auto">
-        <div className="mx-auto max-w-5xl px-6 py-8">{children}</div>
+        <div className="mx-auto max-w-5xl px-8 py-8">{children}</div>
       </main>
     </div>
   )

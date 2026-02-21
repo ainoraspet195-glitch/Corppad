@@ -1,3 +1,8 @@
+import Link from 'next/link'
+import { Input } from '@/components/ui/Input'
+import { Textarea } from '@/components/ui/Textarea'
+import { Button } from '@/components/ui/Button'
+
 interface Props {
   action: (formData: FormData) => Promise<void>
   defaultValues?: { name?: string; description?: string | null }
@@ -23,59 +28,38 @@ export function ProjectForm({
       )}
 
       {error && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Project name <span className="text-red-500">*</span>
-        </label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          required
-          defaultValue={defaultValues?.name ?? ''}
-          placeholder="My project"
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </div>
+      <Input
+        label="Project name"
+        id="name"
+        name="name"
+        type="text"
+        required
+        defaultValue={defaultValues?.name ?? ''}
+        placeholder="My project"
+      />
 
-      <div>
-        <label
-          htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Description
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          rows={3}
-          defaultValue={defaultValues?.description ?? ''}
-          placeholder="Optional short description"
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </div>
+      <Textarea
+        label="Description"
+        id="description"
+        name="description"
+        rows={3}
+        defaultValue={defaultValues?.description ?? ''}
+        placeholder="Optional short description"
+      />
 
-      <div className="flex items-center gap-3">
-        <button
-          type="submit"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          {submitLabel}
-        </button>
-        <a
+      <div className="flex items-center gap-3 pt-1">
+        <Button type="submit">{submitLabel}</Button>
+        <Link
           href={cancelHref}
-          className="rounded-md px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+          className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100"
         >
           Cancel
-        </a>
+        </Link>
       </div>
     </form>
   )

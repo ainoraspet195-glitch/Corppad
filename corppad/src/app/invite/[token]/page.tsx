@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { Button } from '@/components/ui/Button'
 import { redirect } from 'next/navigation'
 import { acceptInviteAction } from './actions'
 
@@ -43,7 +44,7 @@ export default async function AcceptInvitePage({ params, searchParams }: Props) 
         </p>
         <Link
           href="/app"
-          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+          className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-700"
         >
           Go to dashboard
         </Link>
@@ -63,7 +64,7 @@ export default async function AcceptInvitePage({ params, searchParams }: Props) 
         </p>
         <Link
           href="/app"
-          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+          className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-700"
         >
           Go to dashboard
         </Link>
@@ -120,24 +121,21 @@ export default async function AcceptInvitePage({ params, searchParams }: Props) 
       </p>
 
       {error && (
-        <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
       <form action={acceptInviteAction} className="mt-6">
         <input type="hidden" name="token" value={token} />
-        <button
-          type="submit"
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
+        <Button type="submit" className="w-full">
           Accept &amp; join {orgName}
-        </button>
+        </Button>
       </form>
 
       <p className="mt-3 text-center text-xs text-gray-400">
         Not you?{' '}
-        <Link href="/logout" className="text-blue-600 hover:underline">
+        <Link href="/logout" className="font-medium text-indigo-600 hover:text-indigo-700">
           Sign out
         </Link>
       </p>
@@ -148,8 +146,15 @@ export default async function AcceptInvitePage({ params, searchParams }: Props) 
 function InviteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-sm rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
-        {children}
+      <div className="w-full max-w-sm">
+        <div className="mb-6 text-center">
+          <Link href="/app" className="text-sm font-bold tracking-widest text-blue-600">
+            CORPPAD
+          </Link>
+        </div>
+        <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+          {children}
+        </div>
       </div>
     </div>
   )

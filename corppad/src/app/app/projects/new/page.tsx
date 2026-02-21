@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getOrgContext, canWrite } from '@/lib/org'
 import { FREE_PLAN_PROJECT_LIMIT } from '@/lib/limits'
 import { ProjectForm } from '@/components/projects/ProjectForm'
+import { Card } from '@/components/ui/Card'
 import { createProjectAction } from '../actions'
 import { redirect } from 'next/navigation'
 
@@ -24,12 +25,20 @@ export default async function NewProjectPage({ searchParams }: Props) {
   // Members can't create — show clear message
   if (!canWrite(ctx.role)) {
     return (
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">New project</h1>
-        <div className="mt-6 rounded-md border border-gray-200 bg-white p-6 text-sm text-gray-600">
-          Only owners and admins can create projects. Ask your org owner to
-          change your role if needed.
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Link href="/app/projects" className="text-sm text-gray-500 hover:text-gray-700">
+            &larr; Projects
+          </Link>
+          <span className="text-gray-300">/</span>
+          <h1 className="text-xl font-semibold text-gray-900">New project</h1>
         </div>
+        <Card>
+          <p className="text-sm text-gray-600">
+            Only owners and admins can create projects. Ask your org owner to
+            change your role if needed.
+          </p>
+        </Card>
       </div>
     )
   }
@@ -43,13 +52,19 @@ export default async function NewProjectPage({ searchParams }: Props) {
 
     if ((count ?? 0) >= FREE_PLAN_PROJECT_LIMIT) {
       return (
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900">New project</h1>
-          <div className="mt-6 rounded-md border border-amber-200 bg-amber-50 p-6">
-            <p className="text-sm font-medium text-amber-800">
+        <div className="space-y-6">
+          <div className="flex items-center gap-3">
+            <Link href="/app/projects" className="text-sm text-gray-500 hover:text-gray-700">
+              &larr; Projects
+            </Link>
+            <span className="text-gray-300">/</span>
+            <h1 className="text-xl font-semibold text-gray-900">New project</h1>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-6">
+            <p className="text-sm font-semibold text-amber-900">
               Free plan limit reached
             </p>
-            <p className="mt-1 text-sm text-amber-700">
+            <p className="mt-1 text-sm text-amber-800">
               Your organization is on the Free plan and has reached the limit of{' '}
               {FREE_PLAN_PROJECT_LIMIT} projects.{' '}
               <Link
@@ -69,26 +84,23 @@ export default async function NewProjectPage({ searchParams }: Props) {
   const { error } = await searchParams
 
   return (
-    <div>
-      <div className="mb-6 flex items-center gap-3">
-        <Link
-          href="/app/projects"
-          className="text-sm text-gray-500 hover:text-gray-700"
-        >
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <Link href="/app/projects" className="text-sm text-gray-500 hover:text-gray-700">
           &larr; Projects
         </Link>
         <span className="text-gray-300">/</span>
         <h1 className="text-xl font-semibold text-gray-900">New project</h1>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <Card>
         <ProjectForm
           action={createProjectAction}
           error={error}
           submitLabel="Create project"
           cancelHref="/app/projects"
         />
-      </div>
+      </Card>
     </div>
   )
 }
