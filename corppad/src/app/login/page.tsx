@@ -1,16 +1,17 @@
+import Link from 'next/link'
 import { getMissingPublicEnv } from '@/lib/env'
 import { MissingEnv } from '@/components/MissingEnv'
 import { loginAction } from './actions'
 
 interface Props {
-  searchParams: Promise<{ error?: string }>
+  searchParams: Promise<{ error?: string; next?: string }>
 }
 
 export default async function LoginPage({ searchParams }: Props) {
   const missing = getMissingPublicEnv()
   if (missing.length > 0) return <MissingEnv missing={missing} />
 
-  const { error } = await searchParams
+  const { error, next } = await searchParams
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
@@ -26,6 +27,9 @@ export default async function LoginPage({ searchParams }: Props) {
         )}
 
         <form action={loginAction} className="space-y-4">
+          {/* Carry the return URL through the form */}
+          {next && <input type="hidden" name="next" value={next} />}
+
           <div>
             <label
               htmlFor="email"
@@ -70,9 +74,9 @@ export default async function LoginPage({ searchParams }: Props) {
 
         <p className="mt-4 text-center text-sm text-gray-500">
           No account?{' '}
-          <a href="/register" className="text-blue-600 hover:underline">
+          <Link href="/register" className="text-blue-600 hover:underline">
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </div>

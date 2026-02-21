@@ -14,9 +14,19 @@ export async function loginAction(formData: FormData) {
     password: formData.get('password') as string,
   })
 
+  // Preserve next param in error redirect so it survives the failed attempt
+  const nextParam = (formData.get('next') as string | null)?.trim() ?? ''
+  const nextSuffix = nextParam ? `&next=${encodeURIComponent(nextParam)}` : ''
+
   if (error) {
-    redirect(`/login?error=${encodeURIComponent(error.message)}`)
+    redirect(
+      `/login?error=${encodeURIComponent(error.message)}${nextSuffix}`,
+    )
   }
 
-  redirect('/app')
+  // Only allow relative paths to prevent open-redirect
+  const destination =
+    nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/app'
+
+  redirect(destination)
 }
